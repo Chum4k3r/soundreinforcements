@@ -1,20 +1,11 @@
-# Sound Reinforcement Systems
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Aug  3 15:56:59 2020
 
-A personal project to model Sound Reinforcement Systems (SRS) and sound propagation.
+@author: joaovitor
+"""
 
-
-## Installation
-
-Directly from GitHub:
-
-```
-pip install git+https://github.com/Chum4k3r/soundreinforcements.git
-```
-
-
-## Example program
-
-```python
 import numpy as np
 import soundreinforcements as srs
 
@@ -41,4 +32,3 @@ for num, rec in enumerate(recs):
     print(f"Frequencies: {freqs} Hz")
     print(f"SPL: {rec.spl_from_source(src)} dB ref 2e-5 Pa")
     print()
-```
