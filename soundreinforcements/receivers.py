@@ -37,7 +37,7 @@ class Receiver(Object3D):
         dist = self.distance_from_source(source)
         spl = spl_from_swl(source.swl, source.directivity, dist)
         spl -= self.air.absorption('dB/m') * dist
-        return spl
+        return _np.round(spl, 1)
 
     def pressure_from_source(self, source):
         spl = self.spl_from_source(source)
