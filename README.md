@@ -14,6 +14,6 @@ pip install git+https://github.com/Chum4k3r/soundreinforcements.git
 
 ## Examples
 
-Examples are now in the [`examples/`](https://github.com/Chum4k3r/soundreinforcements/blob/examples/) folder.
+Examples are now in the [`examples/`](https://github.com/Chum4k3r/soundreinforcements/tree/master/examples) folder.
 They are the only available documentation on how to use this package, further code documentation will come next.
 
