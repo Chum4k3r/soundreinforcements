@@ -19,7 +19,7 @@ from .space import Object3D, distance
 from .sources import Source
 from .air import Air
 from .levelmaths import spl_from_swl, pressure_from_spl, power_from_swl, \
-                        intensity_from_power, sil_from_intensity
+                       intensity_from_power, sil_from_intensity
 
 
 class Receiver(Object3D):
@@ -54,4 +54,33 @@ class Receiver(Object3D):
         intensity = self.intensity_from_source(source)
         return sil_from_intensity(intensity)
 
+
+class ReceiversGrid(object):
+    """Space distributed receivers grid."""
+
+    def __init__(self, minx, maxx, dx, miny, maxy, dy, z, air):
+        self.rect = _np.array([minx, miny, maxx, maxy], dtype='float16')
+        self.xs = _np.arange(minx, maxx, dx, dtype='float16')
+        self.ys = _np.arange(miny, maxy, dy, dtype='float16')
+        self.z = z
+        self.generate_grid(air)
+        return
+
+    def generate_grid(self, air):
+        self.recsgrids = []
+        for y in self.ys:
+            rs = []
+            for x in self.xs:
+                rs.append(Receiver([x, y, self.z], [x, y, self.z], air))
+            self.recsgrids.append(rs)
+        return
+
+    def eval_spl(self, src: Source):
+        spls = []
+        for recgrid in self.recsgrids:
+            spl = []
+            for rec in recgrid:
+                spl.append(rec.spl_from_source(src))
+            spls.append(spl)
+        return _np.array(spls)
 
