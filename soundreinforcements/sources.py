@@ -14,7 +14,7 @@ Created on Thu Jul 30 23:31:02 2020
 
 
 from .space import Object3D
-from .levelmaths import power_from_wave, swl_from_power
+from .level import power_from_wave, swl_from_power
 from typing import List
 import numpy as _np
 

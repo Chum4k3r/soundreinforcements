@@ -21,12 +21,12 @@ spl1 = rg.eval_spl(src1)
 spl2 = rg.eval_spl(src2)
 
 # Sum the pressures and calculate the sound pressure level
-spl = srs.levelmaths.spl_from_pressure(
-    srs.levelmaths.pressure_from_spl(spl1)
-    + srs.levelmaths.pressure_from_spl(spl2)
+spl = srs.level.spl_from_pressure(
+          srs.level.pressure_from_spl(spl1)
+        + srs.level.pressure_from_spl(spl2)
     )
 
 # View the SPL field
 fig, ax = plt.subplots()
-h = ax.pcolormesh(rg.xs, rg.ys, spl[:, :, 8], cmap='jet', vmin=55., vmax=135.)
+h = ax.pcolormesh(rg.xs, rg.ys, spl[:, :, 4], cmap='jet', vmin=55., vmax=135.)
 cb = fig.colorbar(h, ax=ax, extend='both')

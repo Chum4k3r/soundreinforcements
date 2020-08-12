@@ -193,11 +193,11 @@ def distance(p1: Coordinate, p2: Coordinate) -> float:
     return abs(p2 - p1)
 
 
-def projected_distance_from_plane(plane: str, p1: Coordinate, p2: Coordinate):
+def distance_over_plane(plane: str, p1: Coordinate, p2: Coordinate):
     """Projects both coordinates over a `plane`, to compute the 2D distance of the projection."""
-    p1coord = p1()
-    p2coord = p2()
-    
+    p1coord = p1()[:]
+    p2coord = p2()[:]
+
     if plane == 'xy':
         p1coord[2] = p2coord[2] = 0.
     elif plane == 'xz':
@@ -208,4 +208,4 @@ def projected_distance_from_plane(plane: str, p1: Coordinate, p2: Coordinate):
     p1c = Coordinate(*p1coord)
     p2c = Coordinate(*p2coord)
     return distance(p1c, p2c)
-    
+

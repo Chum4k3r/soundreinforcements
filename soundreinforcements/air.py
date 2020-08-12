@@ -79,7 +79,7 @@ class Air(object):
                  hum: float or int = 50,
                  atm: float or int = 101325,
                  freqs: _np.ndarray = _np.array([63., 125., 250., 500.,
-                                                 1000, 2000, 4000, 8000, 16000],
+                                                 1000, 2000, 4000, 8000],
                                                 dtype='float32')):
         """
         Air properties for acoustical parameters.
@@ -201,7 +201,7 @@ class Air(object):
         return self._freqs
 
     def absorption(self, unit: str):
-        """Air absorption [1/m]."""
+        """Air absorption [1/m | dB/m]."""
         if unit == '1/m':
             return self._props["absorb"]
         elif unit == 'dB/m':

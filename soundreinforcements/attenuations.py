@@ -92,51 +92,47 @@ Barriers:
 """
 
 
-import numpy as np
+import numpy as _np
 from .space import projected_distance_from_plane
 
 
 def divergence(r: float):
-    return 20. * np.log10(r) + 11.
+    return 20. * _np.log10(r) + 11.
 
 
-def atmosphere(a: np.ndarray, r: float):
+def atmosphere(a: _np.ndarray, r: float):
     return a * r
 
 
-def ground(srcpos, srcG, recpos, recG, meanG):
+def ground(projdist, srch, srcG, rech, recG, meanG):
     def dp(d: float):
-        return 1. - np.exp(-d / 50.)
+        return 1. - _np.exp(-d / 50.)
 
     def c125(h, d):
-        return 1.5 + 3 * np.exp(-0.12 * (h - 5)**2) * dp(d) + 5.7 * np.exp(-0.09 * h**2) * (1 - np.exp(-2.8e-6 * d**2))
+        return 1.5 + 3 * _np.exp(-0.12 * (h - 5)**2) * dp(d) + 5.7 * _np.exp(-0.09 * h**2) * (1 - _np.exp(-2.8e-6 * d**2))
 
     def c250(h, d):
-        return 1.5 + 8.6 * np.exp(-0.09 * h**2) * dp(d)
+        return 1.5 + 8.6 * _np.exp(-0.09 * h**2) * dp(d)
 
     def c500(h, d):
-        return 1.5 + 14 * np.exp(-0.46 * h**2) * dp(d)
+        return 1.5 + 14 * _np.exp(-0.46 * h**2) * dp(d)
 
     def c1000(h, d):
-        return 1.5 + 5 * np.exp(-0.9 * h**2) * dp(d)
+        return 1.5 + 5 * _np.exp(-0.9 * h**2) * dp(d)
 
     def q(hr, hs, d):
         m = 30. * (hr + hs)
         return 1. - m / d if d > m else 0.
 
-    projDist = projected_distance_from_plane('xy', srcpos, recpos)
-    recHeight = recpos.z
-    srcHeight = srcpos.z
-
-    Ar = np.array([-1.5, -1.5 + recG*c125(recHeight, projDist), -1.5 + recG*c250(recHeight, projDist),
-        -1.5 + recG*c500(recHeight, projDist), -1.5 + recG*c1000(recHeight, projDist), -1.5*(1-recG),
+    Ar = _np.array([-1.5, -1.5 + recG*c125(rech, projdist), -1.5 + recG*c250(rech, projdist),
+        -1.5 + recG*c500(rech, projdist), -1.5 + recG*c1000(rech, projdist), -1.5*(1-recG),
         -1.5*(1-recG), -1.5*(1-recG)])
 
-    As = np.array([-1.5, -1.5 + srcG*c125(srcHeight, projDist), -1.5 + srcG*c250(srcHeight, projDist),
-        -1.5 + srcG*c500(srcHeight, projDist), -1.5 + srcG*c1000(srcHeight, projDist), -1.5*(1-srcG),
+    As = _np.array([-1.5, -1.5 + srcG*c125(srch, projdist), -1.5 + srcG*c250(srch, projdist),
+        -1.5 + srcG*c500(srch, projdist), -1.5 + srcG*c1000(srch, projdist), -1.5*(1-srcG),
         -1.5*(1-srcG), -1.5*(1-srcG)])
 
-    Am = -3 * q(recHeight, srcHeight, projDist) * np.array([1] + 7 * [1 - meanG])
+    Am = -3 * q(rech, srch, projdist) * _np.array([1] + 7 * [1 - meanG])
 
     return Ar + As + Am
 
