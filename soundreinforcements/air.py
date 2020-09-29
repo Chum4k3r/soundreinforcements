@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Air properties
-==============
+Air properties.
+===============
 
 Sound propagates through the air, and many of its properties affects its propagation.
+
 This module provides an abstraction of the air to obtain its properties and absorption.
 
 Created on Thu Jul 30 22:52:15 2020
@@ -20,7 +21,7 @@ class Air(object):
 
     @staticmethod
     def get_absorption(temp: float, hum: float, atm: float, freq: _np.ndarray):
-        """Calculates the air aborption coefficient in [m^-1]."""
+        """Calculate the air aborption coefficient in [m^-1]."""
         T0 = 293.15                # Reference temperature [k]
         T01 = 273.16               # 0 [C] in [k]
         T = temp + 273.15   # Input temp in [k]
@@ -78,6 +79,7 @@ class Air(object):
                  temp: float or int = 20,
                  hum: float or int = 50,
                  atm: float or int = 101325,
+
                  freqs: _np.ndarray = _np.array([63., 125., 250., 500.,
                                                  1000, 2000, 4000, 8000],
                                                 dtype='float32')):
@@ -153,6 +155,11 @@ class Air(object):
         return self._props["soundSpeed"]
 
     @property
+    def cSoundSpeed(self):
+        """Complex speed of sound for viscous flow problems."""
+        return self.soundSpeed + 0.1j * self.soundSpeed
+
+    @property
     def density(self):
         """Specific, or volumetric, density in kilograms per cubic meter [kg/m³]."""
         return self._props["density"]
@@ -174,10 +181,7 @@ class Air(object):
 
     @property
     def specHeatRatio(self):
-        """
-        Ratio between specific heat at constant pressure
-        and specific heat at constant volume [-].
-        """
+        """Ratio between specific heats. CP/CV."""
         return self._props["specHeatRatio"]
 
     @property
@@ -199,6 +203,16 @@ class Air(object):
     def frequencies(self):
         """Frequencies for which the air absorption was calculated, in Hertz [Hz]."""
         return self._freqs
+
+    @property
+    def waveNum(self):
+        """Amount of cycles in one meter for each frequency, in inverse of meter [m⁻¹]."""
+        return 2 * _np.pi * self.frequencies / self.soundSpeed
+
+    @property
+    def cWaveNum(self):
+        """Complex wave number for problems with viscous flow."""
+        return 2 * _np.pi * self.frequencies / self.cSoundSpeed
 
     def absorption(self, unit: str):
         """Air absorption [1/m | dB/m]."""

@@ -22,7 +22,7 @@ def dB_round(func: callable):
 @dB_round
 def spl_from_pressure(pressure: _np.ndarray):
     """Sound pressure level from effective sound pressure given in Pa."""
-    return 20*_np.log10(pressure/2e-5)
+    return 20*_np.log10(_np.abs(pressure)/2e-5)
 
 
 def pressure_from_spl(spl: _np.ndarray):
@@ -48,7 +48,7 @@ def power_from_wave(wave: _np.ndarray):
 @dB_round
 def sil_from_intensity(intensity: _np.ndarray):
     """Sound intensity level from sound intensity given in W/m²."""
-    return 10*_np.log10(intensity/1e-12)
+    return 10*_np.log10(_np.abs(intensity)/1e-12)
 
 
 def intensity_from_sil(sil: _np.ndarray):
@@ -79,3 +79,6 @@ def intensity_from_power(power: _np.ndarray, distance: float):
     """Sound intensity at `distance` m away from sound source with `power` sound power."""
     return power/(4*_np.pi*distance**2)
 
+
+def pressure_from_power(power: _np.ndarray, distance: float, impedance: float):
+    return (impedance * intensity_from_power(power, distance))**0.5

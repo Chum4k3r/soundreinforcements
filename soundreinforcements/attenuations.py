@@ -93,7 +93,7 @@ Barriers:
 
 
 import numpy as _np
-from .space import projected_distance_from_plane
+from .space import distance_over_plane
 
 
 def divergence(r: float):

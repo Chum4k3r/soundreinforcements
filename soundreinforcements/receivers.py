@@ -18,8 +18,8 @@ from typing import List
 from .space import Object3D, distance, distance_over_plane
 from .sources import Source
 from .air import Air
-from .level import spl_from_swl, pressure_from_spl  #, power_from_swl, \
-                   # intensity_from_power, sil_from_intensity
+from .level import spl_from_swl, pressure_from_spl, spl_from_pressure, pressure_from_power
+                   #, power_from_swl, intensity_from_power, sil_from_intensity
 
 
 class Receiver(Object3D):
@@ -48,8 +48,10 @@ class Receiver(Object3D):
         return spl
 
     def pressure_from_source(self, source, air: Air):
-        spl = self.spl_from_source(source, air)
-        return pressure_from_spl(spl)
+        k = 2 * _np.pi * air.frequencies / air.soundSpeed
+        dist = distance(self.position, source.position)
+        p = pressure_from_power(source.power, dist, air.impedance)
+        return p * _np.exp(-1j * k * dist)
 
     # def intensity_from_source(self, source: Source, air: Air):
     #     dist = self.distance_from_source(source)
@@ -85,11 +87,15 @@ class ReceiversGrid(object):
         return
 
     def eval_spl(self, src: Source):
-        spls = []
-        for recgrid in self.recsgrids:
-            spl = []
-            for rec in recgrid:
-                spl.append(rec.spl_from_source(src, self.air))
-            spls.append(spl)
+        spls = [[rec.spl_from_source(src, self.air)
+                 for rec in recgrid]
+                for recgrid in self.recsgrids]
         return _np.array(spls)
+
+    def eval_pressure(self, src: Source):
+        pressures = [[rec.pressure_from_source(src, self.air)
+                      for rec in recgrid]
+                     for recgrid in self.recsgrids]
+        return _np.array(pressures)
+
 

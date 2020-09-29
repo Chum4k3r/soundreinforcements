@@ -7,6 +7,7 @@ Created on Thu Jul 30 23:33:49 2020
 """
 
 import numpy as _np
+from typing import List
 
 
 class Coordinate(object):
@@ -170,6 +171,62 @@ class Object3D(object):
         else:
             raise TypeError("Orientation must be a soundforce.Orientation.")
         return
+
+
+class Place(object):
+    """Abstraction of place."""
+
+    _Gval = {
+        'porous': 1,
+        'grass': 1,
+        'earth': 0.7,
+        'mixed': 0.5,
+        'rocks': 0.3,
+        'wooden': 0.1,
+        'concrete': 0,
+        'solid': 0
+        }
+
+    def __init__(self, ground: str, botleft: Coordinate, topright: Coordinate):
+        self.ground = ground
+        self.rect = [Coordinate()._type_check(botleft),
+                     Coordinate()._type_check(topright)]
+        return
+
+    @property
+    def diag(self):
+        return self.rect[1] - self.rect[0]
+
+    @property
+    def area(self):
+        vh = self.diag
+        vh.x = 0
+
+        vb = self.diag
+        vb.y = 0
+
+        return abs(vb) * abs(vh)
+
+    @property
+    def G(self):
+        return self._Gval[self.ground]
+
+    @property
+    def ground(self):
+        return self._ground
+
+    @ground.setter
+    def ground(self, gr):
+        if gr not in self._Gval.keys():
+            raise ValueError("Undefined ground type.")
+        self._ground = gr
+        return
+
+
+# class Surroundings(Place):
+#     """Main venue class."""
+
+#     def __init__(self, ground: str, botleft: Coordinate, topright: Coordinate):
 
 
 
